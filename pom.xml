@@ -18,11 +18,10 @@
 
 	<modules>
 		<module>gateway</module>
-		<module>server</module>
-		<module>statistics</module>
-        <module>public</module>
-		<module>private</module>
-		<module>admin</module>
+		<module>server-admin</module>
+		<module>server-private</module>
+		<module>server-public</module>
+		<module>server-stats</module>
 	</modules>
 
 	<packaging>pom</packaging>
