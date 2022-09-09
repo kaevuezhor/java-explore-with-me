@@ -9,7 +9,7 @@ import ru.practicum.explore.compilation.dto.NewCompilationDto;
 @RequiredArgsConstructor
 public class CompilationServiceImpl implements CompilationService {
 
-    private final CompilationRepository compilationRepository;
+    //private final CompilationRepository compilationRepository;
 
     @Override
     public CompilationDto postCompilation(NewCompilationDto newCompilationDto) {

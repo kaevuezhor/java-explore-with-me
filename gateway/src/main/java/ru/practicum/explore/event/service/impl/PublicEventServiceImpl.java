@@ -1,6 +1,8 @@
 package ru.practicum.explore.event.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -17,6 +19,13 @@ public class PublicEventServiceImpl implements PublicEventService {
     private final WebClient webClient;
 
     private static final String API_PREFIX = "/events";
+
+    @Autowired
+    public PublicEventServiceImpl(@Value("${explore-server-public.url}") String serverUrl) {
+        this.webClient = WebClient.builder()
+                .baseUrl(serverUrl + API_PREFIX)
+                .build();
+    }
 
     //TODO - маппинг параметров
     @Override
