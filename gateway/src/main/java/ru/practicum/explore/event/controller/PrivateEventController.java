@@ -2,6 +2,7 @@ package ru.practicum.explore.event.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explore.request.dto.ParticipationRequestDto;
 import ru.practicum.explore.event.dto.EventFullDto;
@@ -10,12 +11,17 @@ import ru.practicum.explore.event.dto.NewEventDto;
 import ru.practicum.explore.event.dto.UpdateEventRequest;
 import ru.practicum.explore.event.service.PrivateEventService;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
 @RestController
 @RequestMapping("/users/{userId}/events")
 @RequiredArgsConstructor
+@Validated
 public class PrivateEventController {
 
     private final PrivateEventService privateEventService;
@@ -24,8 +30,8 @@ public class PrivateEventController {
     @GetMapping
     public List<EventShortDto> getEvents(
             @PathVariable long userId,
-            @RequestParam int from,
-            @RequestParam int size
+            @PositiveOrZero @RequestParam int from,
+            @Positive @RequestParam int size
     ) {
         log.info("Get events user id={}, from={}, size={}", userId, from, size);
         return privateEventService.getEvents(userId, from, size);
@@ -45,9 +51,12 @@ public class PrivateEventController {
     @PostMapping
     public EventFullDto postEvent(
             @PathVariable long userId,
-            @RequestBody NewEventDto newEventDto
+            @RequestBody @Valid NewEventDto newEventDto
     ) {
         log.info("Post event user id={}, event {}", userId, newEventDto);
+        if (newEventDto.getEventDate().isBefore(LocalDateTime.now().plusHours(1))) {
+            throw new IllegalArgumentException(newEventDto.getEventDate().toString());
+        }
         return privateEventService.postEvent(userId, newEventDto);
     }
 

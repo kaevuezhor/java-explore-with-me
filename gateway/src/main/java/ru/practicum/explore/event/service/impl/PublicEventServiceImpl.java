@@ -4,12 +4,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import ru.practicum.explore.event.dto.EventFullDto;
 import ru.practicum.explore.event.dto.EventShortDto;
+import ru.practicum.explore.event.dto.EventSort;
 import ru.practicum.explore.event.service.PublicEventService;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -27,24 +30,33 @@ public class PublicEventServiceImpl implements PublicEventService {
                 .build();
     }
 
-    //TODO - маппинг параметров
     @Override
     public List<EventShortDto> getEvents(
             String text,
-            List<Integer> categories,
+            List<Long> categories,
             Boolean paid,
-            String rangeStart,
-            String rangeEnd,
+            LocalDateTime rangeStart,
+            LocalDateTime rangeEnd,
             boolean onlyAvailable,
-            String sort,
+            EventSort sort,
             int from,
             int size
     ) {
-        return webClient.get().uri(
-                //API_PREFIX + "?text={}&paid={}&rangeStart={}&rangeEnd={}&onlyAvailable={}&sort={}&from={}&size={}",
-                API_PREFIX + "?from=0&size=10",
-                        text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size
+        return webClient.get()
+                .uri(
+                uriBuilder -> uriBuilder
+                        .queryParam("text", text)
+                        .queryParam("categories", categories)
+                        .queryParam("paid", paid)
+                        .queryParam("rangeStart", rangeStart)
+                        .queryParam("rangeEnd", rangeEnd)
+                        .queryParam("onlyAvailable", onlyAvailable)
+                        .queryParam("sort", sort)
+                        .queryParam("from", from)
+                        .queryParam("size", size)
+                        .build()
                 )
+                .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<List<EventShortDto>>() {})
                 .block();
@@ -53,7 +65,10 @@ public class PublicEventServiceImpl implements PublicEventService {
     @Override
     public EventFullDto getEvent(long id) {
         return webClient.get()
-                .uri(API_PREFIX + "/{}", id)
+                .uri(uriBuilder -> uriBuilder
+                        .path("/{id}")
+                        .build(id))
+                .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .bodyToMono(EventFullDto.class)
                 .block();

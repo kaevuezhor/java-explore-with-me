@@ -2,10 +2,13 @@ package ru.practicum.explore.compilation.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explore.compilation.service.PublicCompilationsService;
 import ru.practicum.explore.compilation.dto.CompilationDto;
 
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 
@@ -13,6 +16,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/compilations")
 @RequiredArgsConstructor
+@Validated
 public class PublicCompilationsController {
 
     private final PublicCompilationsService publicCompilationsService;
@@ -21,8 +25,8 @@ public class PublicCompilationsController {
     @GetMapping
     public List<CompilationDto> getCompilations(
             @RequestParam(required = false) Boolean pinned,
-            @RequestParam(required = false, defaultValue = "0") int from,
-            @RequestParam(required = false, defaultValue = "10") int size
+            @PositiveOrZero @RequestParam(required = false, defaultValue = "0") int from,
+            @Positive @RequestParam(required = false, defaultValue = "10") int size
     ) {
         log.info("Get compilations pinned={}, from={}, size={}", pinned, from, size);
         return publicCompilationsService.getCompilations(pinned, from, size);

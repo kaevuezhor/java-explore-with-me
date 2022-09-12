@@ -4,7 +4,6 @@ import lombok.*;
 import org.hibernate.Hibernate;
 import ru.practicum.explore.category.model.Category;
 import ru.practicum.explore.event.dto.EventState;
-import ru.practicum.explore.user.model.User;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;

@@ -2,18 +2,27 @@ package ru.practicum.explore.event.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explore.event.dto.AdminUpdateEventRequest;
 import ru.practicum.explore.event.dto.EventFullDto;
 import ru.practicum.explore.event.dto.EventState;
 import ru.practicum.explore.event.service.AdminEventService;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.temporal.TemporalAccessor;
 import java.util.List;
 
 @Slf4j
 @RestController
 @RequestMapping("/admin/events")
 @RequiredArgsConstructor
+@Validated
 public class AdminEventController {
 
     private final AdminEventService adminEventService;
@@ -24,10 +33,10 @@ public class AdminEventController {
             @RequestParam(required = false) List<Long> users,
             @RequestParam(required = false) List<EventState> states,
             @RequestParam(required = false) List<Long> categories,
-            @RequestParam(required = false) String rangeStart,
-            @RequestParam(required = false) String rangeEnd,
-            @RequestParam(required = false, defaultValue = "0") int from,
-            @RequestParam(required = false, defaultValue = "10") int size
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime rangeStart,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime rangeEnd,
+            @PositiveOrZero @RequestParam(required = false, defaultValue = "0") int from,
+            @Positive @RequestParam(required = false, defaultValue = "10") int size
     ) {
         log.info(
                 "[ADMIN] Get events users={}, states={}, categories={}, rangeStart={}, rangeEnd={}, from={}, size={}",
