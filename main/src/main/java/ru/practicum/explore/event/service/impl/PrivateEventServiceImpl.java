@@ -3,6 +3,7 @@ package ru.practicum.explore.event.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.expression.AccessException;
 import org.springframework.stereotype.Service;
 import ru.practicum.explore.category.model.Category;
 import ru.practicum.explore.category.repository.CategoryRepository;
@@ -22,6 +23,7 @@ import ru.practicum.explore.user.model.User;
 import ru.practicum.explore.user.repository.UserRepository;
 
 import javax.persistence.EntityNotFoundException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -57,39 +59,25 @@ public class PrivateEventServiceImpl implements PrivateEventService {
     public EventFullDto patchEvent(long userId, UpdateEventRequest updateEventRequest) {
         Optional<Event> foundEvent = eventRepository.findById(updateEventRequest.getEventId());
         if (foundEvent.isEmpty()) {
-            throw new EntityNotFoundException("Not found");
+            throw new EntityNotFoundException("Unable to find Event id " + updateEventRequest.getEventId());
         }
-        Event savedEvent = eventRepository.getReferenceById(updateEventRequest.getEventId());
-        if (updateEventRequest.isAnnotationNeedUpdate()) {
-            savedEvent.setAnnotation(updateEventRequest.getAnnotation());
+        if (foundEvent.get().getState().equals(EventState.PUBLISHED)) {
+            throw new IllegalArgumentException("State must be on of [PENDING, CANCELED]");
         }
-        if (updateEventRequest.isCategoryNeedUpdate()) {
-            Optional<Category> patchCategory = categoryRepository.findById(updateEventRequest.getCategory());
-            savedEvent.setCategory(patchCategory.orElseThrow(() -> new EntityNotFoundException("dfdfdf")));
+        if (foundEvent.get().getEventDate().isBefore(LocalDateTime.now().plusHours(2))) {
+            throw new IllegalArgumentException("Event date must be after " + LocalDateTime.now().plusHours(2));
         }
-        if (updateEventRequest.isDescriptionNeedUpdate()) {
-            savedEvent.setDescription(updateEventRequest.getDescription());
-        }
-        if (updateEventRequest.isEventDateNeedUpdate()) {
-            savedEvent.setEventDate(updateEventRequest.getEventDate());
-        }
-        if (updateEventRequest.isPaidFlagNeedUpdate()) {
-            savedEvent.setPaid(updateEventRequest.getPaid());
-        }
-        if (updateEventRequest.isParticipantLimitNeedUpdate()) {
-            savedEvent.setParticipantLimit(updateEventRequest.getParticipantLimit());
-        }
-        if (updateEventRequest.isTitleNeedUpdate()) {
-            savedEvent.setTitle(updateEventRequest.getTitle());
-        }
-        Event updatedEvent = eventRepository.save(savedEvent);
+
+        Event updatedEvent = eventRepository.save(patch(updateEventRequest));
         return eventMapper.toEventFullDto(updatedEvent);
     }
 
     @Override
     public EventFullDto postEvent(long userId, NewEventDto newEventDto) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("loh"));
-        Category category = categoryRepository.findById(newEventDto.getCategory()).orElseThrow(() -> new EntityNotFoundException("loh"));
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("Unable to find User id " + userId));
+        Category category = categoryRepository.findById(newEventDto.getCategory())
+                .orElseThrow(() -> new EntityNotFoundException("Unable to find Category id " + newEventDto.getCategory()));
         Location location = locationRepository.save(newEventDto.getLocation());
         Event savedEvent = eventRepository.save(eventMapper.toEventModel(newEventDto, category, user, location));
         return eventMapper.toEventFullDto(savedEvent);
@@ -98,15 +86,23 @@ public class PrivateEventServiceImpl implements PrivateEventService {
     @Override
     public EventFullDto getEvent(long userId, long eventId) {
         Optional<Event> foundEvent = eventRepository.findByIdAndInitiatorId(eventId, userId);
-        return eventMapper.toEventFullDto(foundEvent.orElseThrow(() -> new EntityNotFoundException("Не найдено:(((")));
+        return eventMapper.toEventFullDto(
+                foundEvent
+                .orElseThrow(() -> new EntityNotFoundException("Unable to find Event id " + eventId))
+        );
     }
 
     @Override
-    public EventFullDto patchEvent(long userId, long eventId, UpdateEventRequest updateEventRequest) {
+    public EventFullDto patchEvent(long userId, long eventId) throws AccessException {
         Event event = eventRepository.getReferenceById(eventId);
+
         if (!event.getState().equals(EventState.PENDING)) {
-            throw new IllegalArgumentException("loh");
+            throw new IllegalArgumentException("State must be PENDING");
         }
+        if (event.getInitiator().getId() != userId) {
+            throw new AccessException("User id " + userId + " not initiator");
+        }
+
         event.setState(EventState.CANCELED);
         return eventMapper.toEventFullDto(eventRepository.save(event));
     }
@@ -120,18 +116,20 @@ public class PrivateEventServiceImpl implements PrivateEventService {
     }
 
     @Override
-    public ParticipationRequestDto confirmRequest(long userId, long eventId, long reqId) {
-        ParticipationRequest request = requestRepository.findById(reqId).orElseThrow(() -> new RuntimeException("loh"));
+    public ParticipationRequestDto confirmRequest(long userId, long eventId, long reqId) throws AccessException {
+        ParticipationRequest request = requestRepository.findById(reqId)
+                .orElseThrow(() -> new EntityNotFoundException("Unable to find Request id " + reqId));
         if (request.getEvent().getId() != eventId) {
-            throw new RuntimeException("loh");
+            throw new EntityNotFoundException("Unable to find Request id " + reqId);
         }
 
-        Event event = eventRepository.findById(eventId).orElseThrow(() -> new RuntimeException("loh"));
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new EntityNotFoundException("Unable to find Event id " + eventId));
         if (event.getInitiator().getId() != userId) {
-            throw new RuntimeException("loh");
+            throw new AccessException("User id " + userId + " not initiator");
         }
         if (event.getConfirmedRequests().size() == event.getParticipantLimit()) {
-            throw new RuntimeException("loh");
+            throw new AccessException("Participant limit is full");
         }
 
         ParticipationRequest confirmingRequest = requestRepository.getReferenceById(reqId);
@@ -148,15 +146,17 @@ public class PrivateEventServiceImpl implements PrivateEventService {
     }
 
     @Override
-    public ParticipationRequestDto rejectRequest(long userId, long eventId, long reqId) {
-        ParticipationRequest request = requestRepository.findById(reqId).orElseThrow(() -> new RuntimeException("loh"));
+    public ParticipationRequestDto rejectRequest(long userId, long eventId, long reqId) throws AccessException {
+        ParticipationRequest request = requestRepository.findById(reqId)
+                .orElseThrow(() -> new EntityNotFoundException("Unable to find Request id " + reqId));
         if (request.getEvent().getId() != eventId) {
-            throw new RuntimeException("loh");
+            throw new EntityNotFoundException("Unable to find Request id " + reqId);
         }
 
-        Event event = eventRepository.findById(eventId).orElseThrow(() -> new RuntimeException("loh"));
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new EntityNotFoundException("Unable to find Event id " + eventId));
         if (event.getInitiator().getId() != userId) {
-            throw new RuntimeException("loh");
+            throw new AccessException("User id " + userId + " not initiator");
         }
 
         ParticipationRequest rejectingRequest = requestRepository.getReferenceById(reqId);
@@ -166,6 +166,37 @@ public class PrivateEventServiceImpl implements PrivateEventService {
         return requestMapper.toParticipationRequestDto(confirmedRequest);
     }
 
-
+    private Event patch(UpdateEventRequest updateEventRequest) {
+        Event savedEvent = eventRepository.getReferenceById(updateEventRequest.getEventId());
+        if (updateEventRequest.getAnnotation() != null) {
+            savedEvent.setAnnotation(updateEventRequest.getAnnotation());
+        }
+        if (updateEventRequest.getCategory() != null) {
+            Optional<Category> patchCategory = categoryRepository.findById(updateEventRequest.getCategory());
+            savedEvent.setCategory(
+                    patchCategory
+                    .orElseThrow(() -> new EntityNotFoundException("Unable to find Category id " + updateEventRequest.getCategory()))
+            );
+        }
+        if (updateEventRequest.getDescription() != null) {
+            savedEvent.setDescription(updateEventRequest.getDescription());
+        }
+        if (updateEventRequest.getEventDate() != null) {
+            savedEvent.setEventDate(updateEventRequest.getEventDate());
+        }
+        if (updateEventRequest.getPaid() != null) {
+            savedEvent.setPaid(updateEventRequest.getPaid());
+        }
+        if (updateEventRequest.getParticipantLimit() != null) {
+            savedEvent.setParticipantLimit(updateEventRequest.getParticipantLimit());
+        }
+        if (updateEventRequest.getTitle() != null) {
+            savedEvent.setTitle(updateEventRequest.getTitle());
+        }
+        if (savedEvent.getState().equals(EventState.CANCELED)) {
+            savedEvent.setState(EventState.PENDING);
+        }
+        return savedEvent;
+    }
 
 }

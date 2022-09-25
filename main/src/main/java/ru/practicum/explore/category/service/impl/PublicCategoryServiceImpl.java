@@ -35,6 +35,7 @@ public class PublicCategoryServiceImpl implements PublicCategoriesService {
     @Override
     public CategoryDto getCategory(long id) {
         Optional<Category> foundCategory = publicCategoryRepository.findById(id);
-        return categoryMapper.toCategoryDto(foundCategory.orElseThrow(() -> new EntityNotFoundException("Не найден")));
+        return categoryMapper.toCategoryDto(foundCategory
+                .orElseThrow(() -> new EntityNotFoundException("Unable to find Category id " + id)));
     }
 }

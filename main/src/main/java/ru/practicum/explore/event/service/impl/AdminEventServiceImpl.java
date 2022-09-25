@@ -81,6 +81,7 @@ public class AdminEventServiceImpl implements AdminEventService {
         validateEvent(eventId);
         Event event = eventRepository.getReferenceById(eventId);
         event.setState(EventState.PUBLISHED);
+        event.setPublishedOn(LocalDateTime.now());
         return eventMapper.toEventFullDto(eventRepository.save(event));
     }
 

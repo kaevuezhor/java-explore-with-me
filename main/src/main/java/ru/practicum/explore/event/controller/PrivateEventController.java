@@ -74,11 +74,10 @@ public class PrivateEventController {
     @PatchMapping("/{eventId}")
     public EventFullDto patchEvent(
             @PathVariable long userId,
-            @PathVariable long eventId,
-            @RequestBody UpdateEventRequest updateEventRequest
+            @PathVariable long eventId
     ) {
-        log.info("Patch event user id={}, event id={}, patch {}", userId, eventId, updateEventRequest);
-        return privateEventService.patchEvent(userId, eventId, updateEventRequest);
+        log.info("Patch event user id={}, event id={}", userId, eventId);
+        return privateEventService.patchEvent(userId, eventId);
     }
 
     //Получение информации о запросах на участие в событии текущего пользователя

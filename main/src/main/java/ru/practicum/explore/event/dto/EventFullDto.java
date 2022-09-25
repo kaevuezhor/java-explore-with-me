@@ -24,6 +24,7 @@ public class EventFullDto {
     private Location location;
     private boolean paid;
     private int participantLimit;
+    @JsonFormat(pattern = "yyy-MM-dd HH:mm:ss", shape = JsonFormat.Shape.STRING)
     private LocalDateTime publishedOn;
     private boolean requestModeration;
     private EventState state;

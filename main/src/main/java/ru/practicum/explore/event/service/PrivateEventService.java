@@ -1,5 +1,6 @@
 package ru.practicum.explore.event.service;
 
+import org.springframework.expression.AccessException;
 import ru.practicum.explore.event.dto.EventFullDto;
 import ru.practicum.explore.event.dto.EventShortDto;
 import ru.practicum.explore.event.dto.NewEventDto;
@@ -18,11 +19,11 @@ public interface PrivateEventService {
 
     EventFullDto getEvent(long userId, long eventId);
 
-    EventFullDto patchEvent(long userId, long eventId, UpdateEventRequest updateEventRequest);
+    EventFullDto patchEvent(long userId, long eventId) throws AccessException;
 
     List<ParticipationRequestDto> getEventRequests(long userId, long eventId);
 
-    ParticipationRequestDto confirmRequest(long userId, long eventId, long reqId);
+    ParticipationRequestDto confirmRequest(long userId, long eventId, long reqId) throws AccessException;
 
-    ParticipationRequestDto rejectRequest(long userId, long eventId, long reqId);
+    ParticipationRequestDto rejectRequest(long userId, long eventId, long reqId) throws AccessException;
 }

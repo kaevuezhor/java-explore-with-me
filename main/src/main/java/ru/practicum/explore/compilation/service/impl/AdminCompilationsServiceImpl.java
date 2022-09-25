@@ -11,6 +11,7 @@ import ru.practicum.explore.compilation.service.AdminCompilationsService;
 import ru.practicum.explore.event.model.Event;
 import ru.practicum.explore.event.repository.EventRepository;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 @Service
@@ -38,7 +39,8 @@ public class AdminCompilationsServiceImpl implements AdminCompilationsService {
     @Override
     public void deleteEventFromCompilation(long compId, long eventId) {
         Compilation compilation = compilationsRepository.getReferenceById(compId);
-        Event event = eventRepository.findById(eventId).orElseThrow();
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new EntityNotFoundException("Unable to find Event id " + eventId));
         List<Event> events = compilation.getEvents();
         events.remove(event);
         compilationsRepository.save(compilation);
@@ -47,7 +49,8 @@ public class AdminCompilationsServiceImpl implements AdminCompilationsService {
     @Override
     public void addEventToCompilation(long compId, long eventId) {
         Compilation compilation = compilationsRepository.getReferenceById(compId);
-        Event event = eventRepository.findById(eventId).orElseThrow();
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new EntityNotFoundException("Unable to find Event id " + eventId));
         List<Event> events = compilation.getEvents();
         events.add(event);
         compilationsRepository.save(compilation);

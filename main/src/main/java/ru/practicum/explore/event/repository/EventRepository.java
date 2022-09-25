@@ -14,6 +14,8 @@ import java.util.Optional;
 @Component
 public interface EventRepository extends JpaRepository<Event, Long> {
 
+    Optional<Event> findByIdAndState(long eventId, EventState state);
+
     @Query("select e from Event e " +
             "where (upper(e.annotation) like upper(concat('%', :text, '%')) " +
             "or upper(e.description) like upper(concat('%', :text, '%'))) " +

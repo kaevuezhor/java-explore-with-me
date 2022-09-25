@@ -10,5 +10,5 @@ public interface PrivateRequestService {
 
     ParticipationRequestDto postRequest(long userId, long eventId);
 
-    ParticipationRequestDto cancelRequest(long userId, long eventId);
+    ParticipationRequestDto cancelRequest(long userId, long requestId);
 }

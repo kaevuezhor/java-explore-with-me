@@ -13,6 +13,7 @@ import ru.practicum.explore.request.service.PrivateRequestService;
 import ru.practicum.explore.user.model.User;
 import ru.practicum.explore.user.repository.UserRepository;
 
+import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -42,7 +43,7 @@ public class PrivateRequestServiceImpl implements PrivateRequestService {
         User requester = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("loh"));
         Event event = eventRepository.findById(eventId).orElseThrow(() -> new RuntimeException("loh"));
         if (event.getConfirmedRequests().size() == event.getParticipantLimit() && event.getParticipantLimit() != 0) {
-            throw new RuntimeException("loh");
+            throw new IllegalArgumentException("Participant limit is full");
         }
 
         RequestStatus status;
@@ -64,9 +65,10 @@ public class PrivateRequestServiceImpl implements PrivateRequestService {
     }
 
     @Override
-    public ParticipationRequestDto cancelRequest(long userId, long eventId) {
-        ParticipationRequest request = requestRepository.findByRequesterIdAndEventId(userId, eventId).orElseThrow(() -> new RuntimeException());
-        request.setStatus(RequestStatus.REJECTED);
+    public ParticipationRequestDto cancelRequest(long userId, long requestId) {
+        ParticipationRequest request = requestRepository.findByRequesterIdAndId(userId, requestId)
+                .orElseThrow(() -> new EntityNotFoundException("Unable too find Request id " + requestId));
+        request.setStatus(RequestStatus.CANCELED);
         ParticipationRequest cancelledRequest = requestRepository.save(request);
         return requestMapper.toParticipationRequestDto(cancelledRequest);
     }

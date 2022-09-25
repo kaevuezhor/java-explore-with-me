@@ -1,6 +1,7 @@
 package ru.practicum.explore.request.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import ru.practicum.explore.request.model.ParticipationRequest;
 
 import java.util.List;
@@ -12,5 +13,5 @@ public interface RequestRepository extends JpaRepository<ParticipationRequest, L
 
     List<ParticipationRequest> findAllByRequesterId(long userId);
 
-    Optional<ParticipationRequest> findByRequesterIdAndEventId(long userId, long eventId);
+    Optional<ParticipationRequest> findByRequesterIdAndId(long userId, long eventId);
 }

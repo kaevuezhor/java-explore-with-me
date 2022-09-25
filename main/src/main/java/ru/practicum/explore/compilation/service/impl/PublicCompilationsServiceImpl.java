@@ -23,7 +23,7 @@ public class PublicCompilationsServiceImpl implements PublicCompilationsService 
     private final CompilationMapper compilationMapper;
     @Override
     public List<CompilationDto> getCompilations(Boolean pinned, int from, int size) {
-        PageRequest pageRequest = PageRequest.of(from / size, size, Sort.by(Sort.Direction.DESC, "id"));
+        PageRequest pageRequest = PageRequest.of(from / size, size, Sort.by(Sort.Direction.ASC, "id"));
         List<Compilation> compilations;
         if (pinned == null) {
             compilations = publicCompilationsRepository.findAll(pageRequest).getContent();
@@ -37,7 +37,8 @@ public class PublicCompilationsServiceImpl implements PublicCompilationsService 
 
     @Override
     public CompilationDto getCompilation(long compId) {
-        Compilation foundCompilation = publicCompilationsRepository.findById(compId).orElseThrow(() -> new EntityNotFoundException("Compilation not found"));
+        Compilation foundCompilation = publicCompilationsRepository.findById(compId)
+                .orElseThrow(() -> new EntityNotFoundException("Unable to find Compilation id " + compId));
         return compilationMapper.toCompilationDto(foundCompilation);
     }
 }
