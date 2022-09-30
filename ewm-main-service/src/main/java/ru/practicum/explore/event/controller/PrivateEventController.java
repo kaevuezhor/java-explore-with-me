@@ -2,6 +2,7 @@ package ru.practicum.explore.event.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.expression.AccessException;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explore.event.dto.EventFullDto;
@@ -75,7 +76,7 @@ public class PrivateEventController {
     public EventFullDto patchEvent(
             @PathVariable long userId,
             @PathVariable long eventId
-    ) {
+    ) throws AccessException {
         log.info("Patch event user id={}, event id={}", userId, eventId);
         return privateEventService.patchEvent(userId, eventId);
     }
@@ -96,7 +97,7 @@ public class PrivateEventController {
             @PathVariable long userId,
             @PathVariable long eventId,
             @PathVariable long reqId
-    ) {
+    ) throws AccessException {
         log.info("Confirm user id={}, event id={}, request id={}", userId, eventId, reqId);
         return privateEventService.confirmRequest(userId, eventId, reqId);
     }
@@ -107,7 +108,7 @@ public class PrivateEventController {
             @PathVariable long userId,
             @PathVariable long eventId,
             @PathVariable long reqId
-    ) {
+    ) throws AccessException {
         log.info("Reject user id={}, event id={}, request id={}", userId, eventId, reqId);
         return privateEventService.rejectRequest(userId, eventId, reqId);
     }

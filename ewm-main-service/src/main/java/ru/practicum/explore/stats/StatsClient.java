@@ -1,6 +1,6 @@
 package ru.practicum.explore.stats;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import ru.practicum.explore.stats.dto.EndpointHitDto;
@@ -8,7 +8,6 @@ import ru.practicum.explore.stats.dto.ViewsStats;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,9 +16,9 @@ public class StatsClient {
 
     private final WebClient webClient;
 
-    public StatsClient() {
+    public StatsClient(@Value("${ewm-stats-server.url}") String serverUrl) {
         this.webClient = WebClient.builder()
-                .baseUrl("http://localhost:9090")
+                .baseUrl(serverUrl)
                 .build();
     }
 
