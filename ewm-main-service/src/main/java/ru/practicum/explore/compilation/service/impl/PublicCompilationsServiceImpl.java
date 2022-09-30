@@ -17,11 +17,9 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class PublicCompilationsServiceImpl implements PublicCompilationsService {
-
     private final CompilationsRepository publicCompilationsRepository;
-
     private final CompilationMapper compilationMapper;
-    
+
     @Override
     public List<CompilationDto> getCompilations(Boolean pinned, int from, int size) {
         PageRequest pageRequest = PageRequest.of(from / size, size, Sort.by(Sort.Direction.ASC, "id"));
