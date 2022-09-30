@@ -36,8 +36,7 @@ public class Event {
     @JsonFormat(pattern = "yyy-MM-dd HH:mm:ss", shape = JsonFormat.Shape.STRING)
     private LocalDateTime createdOn;
 
-    @Lob
-    @Column
+    @Column(name = "description", columnDefinition = "text")
     private String description;
 
     @Column(name = "event_date")
