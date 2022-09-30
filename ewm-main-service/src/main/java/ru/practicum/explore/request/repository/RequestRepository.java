@@ -1,7 +1,6 @@
 package ru.practicum.explore.request.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import ru.practicum.explore.request.model.ParticipationRequest;
 
 import java.util.List;

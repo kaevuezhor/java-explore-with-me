@@ -21,7 +21,7 @@ public class ErrorHandler {
         String errorMessage;
         if (e.getMessage().contains("ru")) {
             String[] message = e.getMessage().split("\\.");
-            String firstLine = message[0].substring(0, message[0].length() -2);
+            String firstLine = message[0].substring(0, message[0].length() - 2);
             String secondLine = message[5];
             errorMessage = firstLine + secondLine;
         } else {

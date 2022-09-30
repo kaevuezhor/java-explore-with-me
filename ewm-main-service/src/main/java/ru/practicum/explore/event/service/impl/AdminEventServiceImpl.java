@@ -48,7 +48,7 @@ public class AdminEventServiceImpl implements AdminEventService {
         List<Event> events;
         if (users == null && states == null && categories == null) {
             events = eventRepository.findAll(rangeStart, rangeEnd, pageRequest);
-        } else if(users != null && states == null && categories == null) {
+        } else if (users != null && states == null && categories == null) {
             events = eventRepository.findAllByInitiators(users, rangeStart, rangeEnd, pageRequest);
         } else if (users == null && states != null && categories == null) {
             events = eventRepository.findAllByStates(states, rangeStart, rangeEnd, pageRequest);
