@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    @Query("select u from User u " +
+    @Query("from User u " +
             "where u.id in :users")
     List<User> findAll(List<Long> users, Pageable pageable);
 }

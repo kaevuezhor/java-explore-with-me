@@ -16,7 +16,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
     Optional<Event> findByIdAndState(long eventId, EventState state);
 
-    @Query("select e from Event e " +
+    @Query("from Event e " +
             "where (upper(e.annotation) like upper(concat('%', :text, '%')) " +
             "or upper(e.description) like upper(concat('%', :text, '%'))) " +
             "and e.category.id in :categories " +
@@ -33,7 +33,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             Pageable pageable
     );
 
-    @Query("select e from Event e " +
+    @Query("from Event e " +
             "where (upper(e.annotation) like upper(concat('%', :text, '%')) " +
             "or upper(e.description) like upper(concat('%', :text, '%'))) " +
             "and e.paid = :paid " +
@@ -48,7 +48,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             Pageable pageable
     );
 
-    @Query("select e from Event e " +
+    @Query("from Event e " +
             "where (upper(e.annotation) like upper(concat('%', :text, '%')) " +
             "or upper(e.description) like upper(concat('%', :text, '%'))) " +
             "and e.category.id in :categories " +
@@ -63,7 +63,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             Pageable pageable
     );
 
-    @Query("select e from Event e " +
+    @Query("from Event e " +
             "where (upper(e.annotation) like upper(concat('%', :text, '%')) " +
             "or upper(e.description) like upper(concat('%', :text, '%'))) " +
             "and e.eventDate between :rangeStart and :rangeEnd " +
@@ -76,7 +76,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             Pageable pageable
     );
 
-    @Query("select e from Event e " +
+    @Query("from Event e " +
             "where (upper(e.annotation) like upper(concat('%', :text, '%')) " +
             "or upper(e.description) like upper(concat('%', :text, '%'))) " +
             "and e.category.id in :categories " +
@@ -94,7 +94,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             Pageable pageable
     );
 
-    @Query("select e from Event e " +
+    @Query("from Event e " +
             "where (upper(e.annotation) like upper(concat('%', :text, '%')) " +
             "or upper(e.description) like upper(concat('%', :text, '%'))) " +
             "and e.paid = :paid " +
@@ -110,7 +110,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             Pageable pageable
     );
 
-    @Query("select e from Event e " +
+    @Query("from Event e " +
             "where (upper(e.annotation) like upper(concat('%', :text, '%')) " +
             "or upper(e.description) like upper(concat('%', :text, '%'))) " +
             "and e.category.id in :categories " +
@@ -126,7 +126,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             Pageable pageable
     );
 
-    @Query("select e from Event e " +
+    @Query("from Event e " +
             "where (upper(e.annotation) like upper(concat('%', :text, '%')) " +
             "or upper(e.description) like upper(concat('%', :text, '%'))) " +
             "and e.eventDate between :rangeStart and :rangeEnd " +
@@ -140,7 +140,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             Pageable pageable
     );
 
-    @Query("select e from Event e " +
+    @Query("from Event e " +
             "where e.initiator.id in :users " +
             "and e.state in :states " +
             "and e.category.id in :categories " +
@@ -154,7 +154,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             Pageable pageable
     );
 
-    @Query("select e from Event e " +
+    @Query("from Event e " +
             "where e.eventDate between :rangeStart and :rangeEnd")
     List<Event> findAll(
             LocalDateTime rangeStart,
@@ -162,7 +162,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             Pageable pageable
     );
 
-    @Query("select e from Event e " +
+    @Query("from Event e " +
             "where e.initiator.id in :users " +
             "and e.eventDate between :rangeStart and :rangeEnd")
     List<Event> findAllByInitiators(
@@ -172,7 +172,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             Pageable pageable
     );
 
-    @Query("select e from Event e " +
+    @Query("from Event e " +
             "where e.state in :states " +
             "and e.eventDate between :rangeStart and :rangeEnd")
     List<Event> findAllByStates(
@@ -182,7 +182,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             Pageable pageable
     );
 
-    @Query("select e from Event e " +
+    @Query("from Event e " +
             "where e.category.id in :categories " +
             "and e.eventDate between :rangeStart and :rangeEnd")
     List<Event> findAllByCategories(
@@ -192,7 +192,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             Pageable pageable
     );
 
-    @Query("select e from Event e " +
+    @Query("from Event e " +
             "where e.initiator.id in :users " +
             "and e.state in :states " +
             "and e.eventDate between :rangeStart and :rangeEnd")
@@ -204,7 +204,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             Pageable pageable
     );
 
-    @Query("select e from Event e " +
+    @Query("from Event e " +
             "where e.initiator.id in :users " +
             "and e.category.id in :categories " +
             "and e.eventDate between :rangeStart and :rangeEnd")
@@ -216,7 +216,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             Pageable pageable
     );
 
-    @Query("select e from Event e " +
+    @Query("from Event e " +
             "where e.state in :states " +
             "and e.category.id in :categories " +
             "and e.eventDate between :rangeStart and :rangeEnd")

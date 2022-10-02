@@ -1,7 +1,6 @@
 package ru.practicum.explore.request.model;
 
 import lombok.*;
-import org.hibernate.Hibernate;
 import ru.practicum.explore.event.model.Event;
 import ru.practicum.explore.request.dto.RequestStatus;
 import ru.practicum.explore.user.model.User;
@@ -39,13 +38,13 @@ public class ParticipationRequest {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        ParticipationRequest that = (ParticipationRequest) o;
-        return Objects.equals(id, that.id);
+        if (o == null || getClass() != o.getClass()) return false;
+        ParticipationRequest request = (ParticipationRequest) o;
+        return id == request.id;
     }
 
     @Override
     public int hashCode() {
-        return getClass().hashCode();
+        return Objects.hash(id);
     }
 }

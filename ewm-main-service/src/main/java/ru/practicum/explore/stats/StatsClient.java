@@ -1,6 +1,6 @@
 package ru.practicum.explore.stats;
 
-import org.springframework.beans.factory.annotation.Value;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import ru.practicum.explore.stats.dto.EndpointHitDto;
@@ -13,15 +13,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
+@RequiredArgsConstructor
 public class StatsClient {
 
     private final WebClient webClient;
-
-    public StatsClient(@Value("${ewm-stats-server.url}") String serverUrl) {
-        this.webClient = WebClient.builder()
-                .baseUrl(serverUrl)
-                .build();
-    }
 
     public void hit(HttpServletRequest request) {
         webClient.post()

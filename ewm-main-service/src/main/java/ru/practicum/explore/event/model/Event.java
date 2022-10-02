@@ -1,8 +1,6 @@
 package ru.practicum.explore.event.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
-import org.hibernate.Hibernate;
 import ru.practicum.explore.category.model.Category;
 import ru.practicum.explore.event.dto.EventState;
 import ru.practicum.explore.request.model.ParticipationRequest;
@@ -33,7 +31,6 @@ public class Event {
     private List<ParticipationRequest> confirmedRequests;
 
     @Column(name = "created_on")
-    @JsonFormat(pattern = "yyy-MM-dd HH:mm:ss", shape = JsonFormat.Shape.STRING)
     private LocalDateTime createdOn;
 
     @Column(name = "description", columnDefinition = "text")
@@ -79,13 +76,13 @@ public class Event {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
         Event event = (Event) o;
-        return Objects.equals(id, event.id);
+        return id == event.id;
     }
 
     @Override
     public int hashCode() {
-        return getClass().hashCode();
+        return Objects.hash(id);
     }
 }
