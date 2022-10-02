@@ -7,6 +7,7 @@ import ru.practicum.explore.category.model.Category;
 import ru.practicum.explore.event.dto.*;
 import ru.practicum.explore.event.model.Event;
 import ru.practicum.explore.event.model.Location;
+import ru.practicum.explore.like.model.Rate;
 import ru.practicum.explore.user.mapper.UserMapper;
 import ru.practicum.explore.user.model.User;
 
@@ -36,6 +37,16 @@ public class EventMapper {
     }
 
     public EventFullDto toEventFullDto(Event event) {
+        List<Rate> rates = event.getRates();
+        long likes = 0;
+        long dislikes = 0;
+        for (Rate rate : rates) {
+            if (rate.isLiked()) {
+                likes++;
+            } else {
+                dislikes++;
+            }
+        }
         return new EventFullDto(
                 event.getAnnotation(),
                 categoryMapper.toCategoryDto(event.getCategory()),
@@ -52,7 +63,9 @@ public class EventMapper {
                 event.isRequestModeration(),
                 event.getState(),
                 event.getTitle(),
-                event.getViews()
+                event.getViews(),
+                likes,
+                dislikes
         );
     }
 
@@ -73,7 +86,8 @@ public class EventMapper {
                 newEventDto.isRequestModeration(),
                 EventState.PENDING,
                 newEventDto.getTitle(),
-                0
+                0,
+                List.of()
         );
     }
 
