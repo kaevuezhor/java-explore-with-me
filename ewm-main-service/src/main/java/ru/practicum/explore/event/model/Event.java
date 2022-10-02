@@ -19,7 +19,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @Table(name = "events")
 public class Event {
-    @Column
+    @Column(name = "annotation", columnDefinition = "text")
     private String annotation;
 
     @ManyToOne
