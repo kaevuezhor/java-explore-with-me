@@ -8,6 +8,7 @@ import ru.practicum.explore.stats.dto.ViewsStats;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,8 +47,8 @@ public class StatsClient {
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/stats")
-                        .queryParam("start", start)
-                        .queryParam("end", end)
+                        .queryParam("start", start.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+                        .queryParam("end", end.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
                         .queryParam("uris", ids.stream().map(i -> "/events/" + i).collect(Collectors.toList()))
                         .queryParam("unique", unique)
                         .build())
