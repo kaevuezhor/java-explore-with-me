@@ -1,7 +1,5 @@
 package ru.practicum.explore.dto;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import lombok.*;
 
 import javax.persistence.*;
@@ -30,7 +28,6 @@ public class EndpointHit {
     private String ip;
 
     @Column
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime timestamp;
 
 

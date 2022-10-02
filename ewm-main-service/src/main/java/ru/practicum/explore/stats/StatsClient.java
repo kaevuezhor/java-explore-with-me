@@ -47,8 +47,8 @@ public class StatsClient {
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/stats")
-                        .queryParam("start", start.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
-                        .queryParam("end", end.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+                        .queryParam("start", start)
+                        .queryParam("end", end)
                         .queryParam("uris", ids.stream().map(i -> "/events/" + i).collect(Collectors.toList()))
                         .queryParam("unique", unique)
                         .build())
