@@ -10,12 +10,12 @@ public enum EventSort {
     VIEWS("views"),
     RATE("rate");
 
-    private String title;
+    private final String title;
 
     EventSort(String title) {
         this.title = title;
     }
-    
+
     public static Optional<EventSort> from(String sortParam) {
         for (EventSort sort : values()) {
             if (sort.name().equalsIgnoreCase(sortParam)) {
