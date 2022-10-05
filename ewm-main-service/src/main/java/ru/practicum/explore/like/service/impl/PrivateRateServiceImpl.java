@@ -12,6 +12,8 @@ import ru.practicum.explore.request.model.ParticipationRequest;
 import ru.practicum.explore.user.model.User;
 import ru.practicum.explore.user.repository.UserRepository;
 
+import javax.persistence.EntityNotFoundException;
+import java.rmi.AccessException;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -26,20 +28,20 @@ public class PrivateRateServiceImpl implements PrivateRateService {
     private final RateRepository rateRepository;
 
     @Override
-    public void like(long userId, long eventId) {
-        User user = userRepository.findById(userId).orElseThrow();
+    public void like(long userId, long eventId) throws IllegalAccessException, AccessException {
+        User user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("Unable to find User id " + userId));
         Event event = eventRepository.getReferenceById(eventId);
         if (!event.getState().equals(EventState.PUBLISHED)) {
-            throw new RuntimeException();
+            throw new IllegalStateException("Event should be PUBLISHED");
         }
         if (event.getEventDate().isBefore(LocalDateTime.now())) {
-            throw new RuntimeException();
+            throw new IllegalAccessException("You can't rate future Event");
         }
         if (userNotParticipated(user, event)) {
-            throw new RuntimeException();
+            throw new AccessException("You can't rate Event without participation");
         }
         if (event.getInitiator().equals(user)) {
-            throw new RuntimeException();
+            throw new IllegalAccessException("You can't rate your own Event");
         }
         Optional<Rate> savedRate = rateRepository.findByEventIdAndUserId(eventId, userId);
         if (savedRate.isEmpty()) {
@@ -64,20 +66,20 @@ public class PrivateRateServiceImpl implements PrivateRateService {
     }
 
     @Override
-    public void dislike(long userId, long eventId) {
-        User user = userRepository.findById(userId).orElseThrow();
+    public void dislike(long userId, long eventId) throws IllegalAccessException, AccessException {
+        User user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("Unable to find User id " + userId));
         Event event = eventRepository.getReferenceById(eventId);
         if (!event.getState().equals(EventState.PUBLISHED)) {
-            throw new RuntimeException();
+            throw new IllegalStateException("Event should be PUBLISHED");
         }
         if (event.getEventDate().isBefore(LocalDateTime.now())) {
-            throw new RuntimeException();
+            throw new IllegalAccessException("You can't rate future Event");
         }
         if (userNotParticipated(user, event)) {
-            throw new RuntimeException();
+            throw new AccessException("You can't rate Event without participation");
         }
         if (event.getInitiator().equals(user)) {
-            throw new RuntimeException();
+            throw new IllegalAccessException("You can't rate your own Event");
         }
         Optional<Rate> savedRate = rateRepository.findByEventIdAndUserId(eventId, userId);
         if (savedRate.isEmpty()) {

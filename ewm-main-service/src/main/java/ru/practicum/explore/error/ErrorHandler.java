@@ -92,4 +92,26 @@ public class ErrorHandler {
                 LocalDateTime.now()
         );
     }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiError handleIlligalStateException(final IllegalStateException e) {
+        return new ApiError(
+                HttpStatus.BAD_REQUEST.name(),
+                e.getMessage(),
+                "For the requested operation the conditions are not met.",
+                LocalDateTime.now()
+        );
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiError handleIlligalAccessException(final IllegalAccessException e) {
+        return new ApiError(
+                HttpStatus.BAD_REQUEST.name(),
+                e.getMessage(),
+                "For the requested operation the conditions are not met.",
+                LocalDateTime.now()
+        );
+    }
 }

@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explore.like.service.PrivateRateService;
 
+import java.rmi.AccessException;
+
 @Slf4j
 @RestController
 @RequestMapping("/users/{userId}/events/{eventId}")
@@ -17,7 +19,7 @@ public class PrivateLikeController {
     public void like(
             @PathVariable long userId,
             @PathVariable long eventId
-    ) {
+    ) throws IllegalAccessException, AccessException {
         log.info("Like user id={}, event id={}", userId, eventId);
         privateRateService.like(userId, eventId);
     }
@@ -26,7 +28,7 @@ public class PrivateLikeController {
     public void dislike(
             @PathVariable long userId,
             @PathVariable long eventId
-    ) {
+    ) throws IllegalAccessException, AccessException {
         log.info("Dislike user id={}, event id={}", userId, eventId);
         privateRateService.dislike(userId, eventId);
     }
