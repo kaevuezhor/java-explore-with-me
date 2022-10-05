@@ -4,7 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.practicum.explore.category.mapper.CategoryMapper;
 import ru.practicum.explore.category.model.Category;
-import ru.practicum.explore.event.dto.*;
+import ru.practicum.explore.event.dto.EventFullDto;
+import ru.practicum.explore.event.dto.EventShortDto;
+import ru.practicum.explore.event.dto.EventState;
+import ru.practicum.explore.event.dto.NewEventDto;
 import ru.practicum.explore.event.model.Event;
 import ru.practicum.explore.event.model.Location;
 import ru.practicum.explore.like.model.Rate;
@@ -90,6 +93,4 @@ public class EventMapper {
                 List.of()
         );
     }
-
-
 }
