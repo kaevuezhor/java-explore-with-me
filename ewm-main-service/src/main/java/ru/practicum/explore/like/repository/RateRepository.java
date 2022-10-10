@@ -5,7 +5,7 @@ import ru.practicum.explore.like.model.Rate;
 
 import java.util.Optional;
 
-public interface RateRepository extends JpaRepository<Rate, Long> {
+public interface RateRepository<T extends Rate> extends JpaRepository<T, Long> {
 
-    Optional<Rate> findByEventIdAndUserId(long eventId, long userId);
+    Optional<T> findByEventIdAndUserId(long eventId, long userId);
 }

@@ -14,7 +14,7 @@ import java.rmi.AccessException;
 @RestController
 @RequestMapping("/users/{userId}/events/{eventId}")
 @RequiredArgsConstructor
-public class PrivateLikeController {
+public class PrivateRateController {
 
     private final PrivateRateService privateRateService;
 
