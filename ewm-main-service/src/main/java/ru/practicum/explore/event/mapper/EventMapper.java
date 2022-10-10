@@ -15,6 +15,7 @@ import ru.practicum.explore.user.mapper.UserMapper;
 import ru.practicum.explore.user.model.User;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 
 @Component
@@ -90,7 +91,7 @@ public class EventMapper {
                 EventState.PENDING,
                 newEventDto.getTitle(),
                 0,
-                List.of()
+                Collections.emptyList()
         );
     }
 }

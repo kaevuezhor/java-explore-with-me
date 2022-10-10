@@ -2,6 +2,7 @@ package ru.practicum.explore.like.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.explore.event.dto.EventState;
 import ru.practicum.explore.event.model.Event;
 import ru.practicum.explore.event.repository.EventRepository;
@@ -27,18 +28,19 @@ public class PrivateRateServiceImpl implements PrivateRateService {
     private final RateRepository rateRepository;
 
     @Override
+    @Transactional
     public void like(long userId, long eventId) throws IllegalAccessException, AccessException {
-        User user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("Unable to find User id " + userId));
         Event event = eventRepository.getReferenceById(eventId);
-        if (!event.getState().equals(EventState.PUBLISHED)) {
+        if (!EventState.PUBLISHED.equals(event.getState())) {
             throw new IllegalStateException("Event should be PUBLISHED");
         }
         if (event.getEventDate().isBefore(LocalDateTime.now())) {
             throw new IllegalAccessException("You can't rate future Event");
         }
-        if (userNotParticipated(user, event)) {
-            throw new AccessException("You can't rate Event without participation");
-        }
+        User user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("Unable to find User id " + userId));
+
+        userNotParticipatedCheck(user, event);
+
         if (event.getInitiator().equals(user)) {
             throw new IllegalAccessException("You can't rate your own Event");
         }
@@ -65,18 +67,19 @@ public class PrivateRateServiceImpl implements PrivateRateService {
     }
 
     @Override
+    @Transactional
     public void dislike(long userId, long eventId) throws IllegalAccessException, AccessException {
-        User user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("Unable to find User id " + userId));
         Event event = eventRepository.getReferenceById(eventId);
-        if (!event.getState().equals(EventState.PUBLISHED)) {
+        if (!EventState.PUBLISHED.equals(event.getState())) {
             throw new IllegalStateException("Event should be PUBLISHED");
         }
         if (event.getEventDate().isBefore(LocalDateTime.now())) {
             throw new IllegalAccessException("You can't rate future Event");
         }
-        if (userNotParticipated(user, event)) {
-            throw new AccessException("You can't rate Event without participation");
-        }
+        User user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("Unable to find User id " + userId));
+
+        userNotParticipatedCheck(user, event);
+
         if (event.getInitiator().equals(user)) {
             throw new IllegalAccessException("You can't rate your own Event");
         }
@@ -102,12 +105,12 @@ public class PrivateRateServiceImpl implements PrivateRateService {
         eventRepository.save(event);
     }
 
-    private boolean userNotParticipated(User user, Event event) {
+    private void userNotParticipatedCheck(User user, Event event) throws AccessException {
         for (ParticipationRequest request : event.getConfirmedRequests()) {
             if (request.getRequester().equals(user)) {
-                return false;
+                return;
             }
         }
-        return true;
+        throw new AccessException("You can't rate Event without participation");
     }
 }

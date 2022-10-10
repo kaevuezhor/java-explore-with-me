@@ -1,20 +1,18 @@
 package ru.practicum.explore.event.dto;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 import java.util.Optional;
 
 @Getter
+@RequiredArgsConstructor
 public enum EventSort {
     EVENT_DATE("eventDate"),
     VIEWS("views"),
     RATE("rate");
 
     private final String title;
-
-    EventSort(String title) {
-        this.title = title;
-    }
 
     public static Optional<EventSort> from(String sortParam) {
         for (EventSort sort : values()) {
