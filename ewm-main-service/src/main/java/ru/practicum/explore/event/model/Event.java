@@ -3,6 +3,8 @@ package ru.practicum.explore.event.model;
 import lombok.*;
 import ru.practicum.explore.category.model.Category;
 import ru.practicum.explore.event.dto.EventState;
+import ru.practicum.explore.like.model.Dislike;
+import ru.practicum.explore.like.model.Like;
 import ru.practicum.explore.request.model.ParticipationRequest;
 import ru.practicum.explore.user.model.User;
 
@@ -72,6 +74,14 @@ public class Event {
 
     @Column
     private long views;
+
+    @OneToMany
+    @JoinColumn(name = "like_id")
+    private List<Like> likes;
+
+    @OneToMany
+    @JoinColumn(name = "dislike_id")
+    private List<Dislike> dislikes;
 
     @Override
     public boolean equals(Object o) {

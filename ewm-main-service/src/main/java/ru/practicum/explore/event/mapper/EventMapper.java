@@ -4,13 +4,17 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.practicum.explore.category.mapper.CategoryMapper;
 import ru.practicum.explore.category.model.Category;
-import ru.practicum.explore.event.dto.*;
+import ru.practicum.explore.event.dto.EventFullDto;
+import ru.practicum.explore.event.dto.EventShortDto;
+import ru.practicum.explore.event.dto.EventState;
+import ru.practicum.explore.event.dto.NewEventDto;
 import ru.practicum.explore.event.model.Event;
 import ru.practicum.explore.event.model.Location;
 import ru.practicum.explore.user.mapper.UserMapper;
 import ru.practicum.explore.user.model.User;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 
 @Component
@@ -52,7 +56,9 @@ public class EventMapper {
                 event.isRequestModeration(),
                 event.getState(),
                 event.getTitle(),
-                event.getViews()
+                event.getViews(),
+                event.getLikes().size(),
+                event.getDislikes().size()
         );
     }
 
@@ -73,9 +79,9 @@ public class EventMapper {
                 newEventDto.isRequestModeration(),
                 EventState.PENDING,
                 newEventDto.getTitle(),
-                0
+                0,
+                Collections.emptyList(),
+                Collections.emptyList()
         );
     }
-
-
 }
