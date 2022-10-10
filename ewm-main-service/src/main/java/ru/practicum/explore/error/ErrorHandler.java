@@ -3,13 +3,13 @@ package ru.practicum.explore.error;
 import org.postgresql.util.PSQLException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.expression.AccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.persistence.EntityNotFoundException;
+import java.rmi.AccessException;
 import java.time.LocalDateTime;
 
 @RestControllerAdvice
@@ -95,7 +95,7 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiError handleIlligalStateException(final IllegalStateException e) {
+    public ApiError handleIllegalStateException(final IllegalStateException e) {
         return new ApiError(
                 HttpStatus.BAD_REQUEST.name(),
                 e.getMessage(),
@@ -106,7 +106,7 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiError handleIlligalAccessException(final IllegalAccessException e) {
+    public ApiError handleIllegalAccessException(final IllegalAccessException e) {
         return new ApiError(
                 HttpStatus.BAD_REQUEST.name(),
                 e.getMessage(),

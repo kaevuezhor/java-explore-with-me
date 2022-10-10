@@ -8,7 +8,8 @@ import ru.practicum.explore.event.model.Event;
 import ru.practicum.explore.event.repository.EventRepository;
 import ru.practicum.explore.like.model.Dislike;
 import ru.practicum.explore.like.model.Like;
-import ru.practicum.explore.like.repository.RateRepository;
+import ru.practicum.explore.like.repository.DislikeRepository;
+import ru.practicum.explore.like.repository.LikeRepository;
 import ru.practicum.explore.like.service.PrivateRateService;
 import ru.practicum.explore.request.model.ParticipationRequest;
 import ru.practicum.explore.user.model.User;
@@ -25,9 +26,9 @@ public class PrivateRateServiceImpl implements PrivateRateService {
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
 
-    private final RateRepository<Like> likeRepository;
+    private final LikeRepository likeRepository;
 
-    private final RateRepository<Dislike> dislikeRepository;
+    private final DislikeRepository dislikeRepository;
 
     @Override
     @Transactional

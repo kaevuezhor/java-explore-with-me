@@ -17,12 +17,12 @@ import javax.persistence.Table;
 import java.util.Objects;
 
 @Entity
-@Table(name = "likes")
+@Table(name = "dislikes")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Dislike extends Rate {
+public class Dislike {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;

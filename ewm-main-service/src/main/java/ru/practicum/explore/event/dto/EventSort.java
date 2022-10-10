@@ -10,7 +10,8 @@ import java.util.Optional;
 public enum EventSort {
     EVENT_DATE("eventDate"),
     VIEWS("views"),
-    RATE("rate");
+    LIKES("likes"),
+    DISLIKES("dislikes");
 
     private final String title;
 

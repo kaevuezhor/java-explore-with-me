@@ -22,7 +22,7 @@ import java.util.Objects;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Like extends Rate {
+public class Like {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
